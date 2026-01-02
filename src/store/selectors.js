@@ -2,7 +2,7 @@
 
 export const selectTodos = (state) => state.todos.items;
 export const SelectFilter = (state) => state.todos.filter;
-export const selectIsAddingTodo = (state) => state.todos.setIsAddingTodo;
+export const selectIsAddingTodo = (state) => state.todos.isAddingTodo;
 
 //Filter Items
 export const selectFilteredTodos = (state) => {

@@ -3,7 +3,7 @@ import { CheckCircle2, Circle, Filter, Plus, Trash2 } from "lucide-react";
 import TodoFilters from "./TodoFilters";
 import TodoForm from "./TodoForm";
 import TodoItem from "./TodoItem";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectTodos,
   selectFilteredTodos,
@@ -11,13 +11,19 @@ import {
   SelectFilter,
   selectIsAddingTodo,
 } from "../store/selectors";
+import { setIsAddingTodo } from "../store/todoSlice";
 
 function TodoApp() {
+  const dispatch = useDispatch();
   const todos = useSelector(selectTodos);
   const filteredTodos = useSelector(selectFilteredTodos);
   const stats = useSelector(selectTodosStats);
   const filter = useSelector(SelectFilter);
   const isAddingTodo = useSelector(selectIsAddingTodo);
+
+  const handleAddTodoClick = () => {
+    dispatch(setIsAddingTodo(true));
+  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-100 via-gray-200 to-gray-300 py-8 px-4">
@@ -29,56 +35,61 @@ function TodoApp() {
         </div>
 
         {/* Stats Card */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 my-6 border border-gray-300 shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Progress Overview
-            </h2>
-            <div className="text-2xl font-bold text-green-600">
-              {/* Stats Completed Logic */}
-              {stats.completionPercentage}%
-            </div>
-          </div>
-          <div className="w-full bg-gray-300 rounded-full h-3 mb-4">
-            {/* Progress Bar */}
-            <div
-              className="bg-linear-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${stats.completionPercentage}%` }}
-            ></div>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-gray-800">
-                {/* Stats Total Logic */}
-                {stats.total}
-              </div>
-              <div className="text-sm text-gray-600">Total</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-800">
-                {/* Stats Active Logic */}
-                {stats.active}
-              </div>
-              <div className="text-sm text-gray-600">Active</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-800">
+        {stats.total > 0 && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 my-6 border border-gray-300 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Progress Overview
+              </h2>
+              <div className="text-2xl font-bold text-green-600">
                 {/* Stats Completed Logic */}
-                {stats.completed}
+                {stats.completionPercentage}%
               </div>
-              <div className="text-sm text-gray-600">Completed</div>
+            </div>
+            <div className="w-full bg-gray-300 rounded-full h-3 mb-4">
+              {/* Progress Bar */}
+              <div
+                className="bg-linear-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${stats.completionPercentage}%` }}
+              ></div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-gray-800">
+                  {/* Stats Total Logic */}
+                  {stats.total}
+                </div>
+                <div className="text-sm text-gray-600">Total</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-800">
+                  {/* Stats Active Logic */}
+                  {stats.active}
+                </div>
+                <div className="text-sm text-gray-600">Active</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-800">
+                  {/* Stats Completed Logic */}
+                  {stats.completed}
+                </div>
+                <div className="text-sm text-gray-600">Completed</div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Todo Components */}
         <div className="bg-white/90 backdrop-blur-sm rounded-b-2xl border border-gray-300 shadow-lg overflow-hidden">
           {/* Action Bar */}
           <div className="p-6 border-b border-gray-300">
             <div className="flex items-center justify-between mb-4">
-              <button className="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium cursor-pointer">
+              <button
+                className="flex items-center gap-3 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
+                onClick={handleAddTodoClick}
+              >
                 <Plus size={20} />
                 Add Todo
               </button>
@@ -107,7 +118,7 @@ function TodoApp() {
           {/* Todo Form */}
           {isAddingTodo && (
             <div className="p-6 border-b border-gray-300 bg-gray-100">
-              <TodoForm />
+              <TodoForm placeholder="Add a new todo..." />
             </div>
           )}
 
@@ -128,21 +139,31 @@ function TodoApp() {
                   <div className="text-gray-600">
                     <Filter size={48} className="mx-auto mb-4 opacity-50" />
                     <p className="text-lg font-medium mb-2 text-gray-800">
-                      No filters Todos
+                      No {filter} Todos
                       {/* Will manage it on later */}
+                      <p className="text-sm">
+                        {filter === "completed" &&
+                          "all your todos are completed!"}
+                        {filter === "active" &&
+                          "No completed todos yet, keep going!"}
+                      </p>
                     </p>
                   </div>
                 )}
               </div>
             ) : (
-              <div></div>
+              <div className="divide-y divide-gray-300">
+                {filteredTodos.map((todo, index) => (
+                  <TodoItem key={todo.id} todo={todo} index={index} />
+                ))}
+              </div>
             )}
           </div>
         </div>
         {/* Footer */}
         <div>
           <p className="text-center text-sm text-gray-700 mt-6">
-            &copy; 2024 Todo-Flow. All rights reserved.
+            &copy; {new Date().getFullYear()} Todo-Flow. All rights reserved.
           </p>
         </div>
       </div>
