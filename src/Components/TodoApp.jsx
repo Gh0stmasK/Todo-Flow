@@ -113,25 +113,30 @@ function TodoApp() {
 
           {/* Todo List */}
           <div className="max-h-96 overflow-y-auto">
-            {filteredTodos.length===0}
-            <div className="p-12 text-center">
-              <div className="text-gray-600">
-                <Circle size={48} className="mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium mb-2 text-gray-800">
-                  No todos Yet
-                </p>
-                <p>Add your first todo to get started!</p>
+            {filteredTodos.length === 0 ? (
+              <div className="p-12 text-center">
+                {todos.length === 0 ? (
+                  <div className="text-gray-600">
+                    <Circle size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-lg font-medium mb-2 text-gray-800">
+                      No todos Yet
+                    </p>
+                    <p>Add your first todo to get started!</p>
+                  </div>
+                ) : (
+                  /* Conditional rendering will add logics later */
+                  <div className="text-gray-600">
+                    <Filter size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-lg font-medium mb-2 text-gray-800">
+                      No filters Todos
+                      {/* Will manage it on later */}
+                    </p>
+                  </div>
+                )}
               </div>
-
-              {/* Conditional rendering will add logics later */}
-              <div className="text-gray-600">
-                <Filter size={48} className="mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium mb-2 text-gray-800">
-                  No filters Todos
-                  {/* Will manage it on later */}
-                </p>
-              </div>
-            </div>
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
         {/* Footer */}
