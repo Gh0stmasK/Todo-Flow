@@ -62,21 +62,21 @@ function TodoItem({ todo, index }) {
       {/* Toggle button */}
       <div className="flex items-start gap-3">
         <button
-          className={`shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 mt-0.5 ${
+          className={`shrink-0 w-6 h-6 min-w-6 min-h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 mt-0.5 ${
             todo.completed
               ? "bg-green-500 border-green-500 text-white hover:bg-green-600"
               : "border-gray-400 hover:border-green-500 hover:bg-green-50"
           }`}
           onClick={handleToggle}
         >
-          {todo.completed && <Check size={14} />}
+          {todo.completed && <Check size={20} className="w-5 h-5 min-w-5 min-h-5" />}
         </button>
         {/* Todo Content */}
         <div className="flex-1 min-w-0">
           <div className={`text-gray-800 leading-relaxed`}>{todo.text}</div>
           <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
             <div className="flex items-center gap-1">
-              <Calendar size={12} />
+              <Calendar size={18} className="w-4 h-4 min-w-4 min-h-4" />
               <span>Created at {formatDate(todo.createdAt)}</span>
             </div>
             <span>Update {formatDate(todo.updatedAt)}</span>
@@ -84,18 +84,18 @@ function TodoItem({ todo, index }) {
         </div>
 
         {/* Action buttons */}
-        <div className="flex items-center gap-1 opacity-100 transition-all duration-200">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
           <button
             className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-lg transition-all duration-200"
             onClick={() => setIsEditing(true)}
           >
-            <Edit3 size={16} />
+            <Edit3 size={20} className="w-5 h-5 min-w-5 min-h-5" />
           </button>
           <button
             className="p-2 text-gray-500 hover:text-red-600 hover:bg-gray-200 rounded-lg transition-all duration-200"
             onClick={handleDelete}
           >
-            <Trash2 size={16} />
+            <Trash2 size={20} className="w-5 h-5 min-w-5 min-h-5" />
           </button>
         </div>
       </div>
