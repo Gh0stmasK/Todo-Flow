@@ -84,7 +84,7 @@ function TodoItem({ todo, index }) {
         </div>
 
         {/* Action buttons */}
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+        <div className="flex items-center gap-1 opacity-100 transition-all duration-200">
           <button
             className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-lg transition-all duration-200"
             onClick={() => setIsEditing(true)}
