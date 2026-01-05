@@ -1,7 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+
+const loadTodos = () => {
+    try {
+        const saved = localStorage.getItem("todos");
+        return saved ? JSON.parse(saved) : [];
+    }
+    catch {
+        return [];
+    }
+}
+
+const savedTodos = (todo) => {
+    try {
+        localStorage.setItem("todos", JSON.stringify(todo));
+    }
+    catch (error) {
+        console.error("Failed to save todos......", error);
+    }
+}
+
 const initialState = {
-    items: [],
+    items: loadTodos(),
     filter: "all",
     isAddingTodo: false,
 }
@@ -25,6 +45,7 @@ const todoSlice = createSlice({
             };
             state.items.unshift(newTodo);
             state.isAddingTodo = false;
+            savedTodos(state.items);
         },
 
         //Toggle Todo
@@ -33,12 +54,14 @@ const todoSlice = createSlice({
             if (todo) {
                 todo.completed = !todo.completed;
                 todo.updatedAt = new Date().toISOString();
+                savedTodos(state.items);
             }
         },
 
         //Delete Todo
         deleteTodo: (state, action) => {
             state.items = state.items.filter((todo) => todo.id !== action.payload);
+            savedTodos(state.items);
         },
 
         //Edit or Update Todo
@@ -48,8 +71,28 @@ const todoSlice = createSlice({
             if (todo) {
                 Object.assign(todo, updates, { updatedAt: new Date().toISOString() });
             }
+            savedTodos(state.items);
+        },
+
+        setFilter: (state, action) => {
+            state.filter = action.payload;
+        },
+
+
+        markAllComplete: (state) => {
+            const hasIncomplete = state.items.some((todo) => !todo.completed);
+            state.items.forEach((todo) => {
+                todo.completed = hasIncomplete;
+                todo.updatedAt = new Date().toISOString();
+            });
+            savedTodos(state.items);
+        },
+
+        clearCompleted: (state) => {
+            state.items = state.items.filter((todo) => !todo.completed);
+            savedTodos(state.items);
         },
     },
 });
-export const { setIsAddingTodo, addTodo, toggleTodo, deleteTodo, updateTodo } = todoSlice.actions;
+export const { setIsAddingTodo, addTodo, toggleTodo, deleteTodo, updateTodo, setFilter, markAllComplete, clearCompleted } = todoSlice.actions;
 export default todoSlice.reducer;
